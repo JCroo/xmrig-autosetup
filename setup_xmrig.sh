@@ -1,10 +1,13 @@
 #!/bin/bash
 
+# Отключение интерактивных запросов
+export DEBIAN_FRONTEND=noninteractive
+
 echo "Обновление системы..."
-sudo apt update && sudo apt upgrade -y
+sudo apt update -y && sudo apt upgrade -y
 
 echo "Установка необходимых библиотек..."
-sudo apt install git build-essential cmake libuv1-dev libssl-dev libhwloc-dev -y
+sudo apt install -y git build-essential cmake libuv1-dev libssl-dev libhwloc-dev
 
 echo "Настройка Huge Pages..."
 grep Huge /proc/meminfo
@@ -13,11 +16,11 @@ sudo bash -c 'echo "vm.nr_hugepages=128" >> /etc/sysctl.conf'
 sudo sysctl -p
 
 echo "Оптимизация CPU..."
-sudo apt install cpufrequtils -y
+sudo apt install -y cpufrequtils
 sudo cpufreq-set -g performance
 
 echo "Установка screen..."
-sudo apt install screen -y
+sudo apt install -y screen
 
 echo "Создание сеанса screen..."
 screen -dmS miner
@@ -28,14 +31,14 @@ cd xmrig
 
 echo "Сборка XMRig..."
 mkdir build && cd build
-cmake ..
+cmake .. > /dev/null
 make -j$(nproc)
 
 echo "Проверка версии XMRig..."
 ./xmrig --version
 
 echo "Обновление ядра..."
-sudo apt install --install-recommends linux-generic -y
+sudo apt install -y --install-recommends linux-generic
 
 echo "Перезагрузка сервера для завершения обновлений..."
 sudo reboot
